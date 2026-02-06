@@ -1,0 +1,51 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "torchft"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+dependencies = [
+    "torch>=2.7"
+]
+
+[project.urls]
+Documentation = "https://pytorch-labs.github.io/torchft"
+Repository = "https://github.com/pytorch-labs/torchft"
+Issues = "https://github.com/pytorch-labs/torchft/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-timeout",
+    "black",
+    "pyre-check",
+    "parameterized",
+    "expecttest",
+    "numpy",
+    "torchx"
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "torchft._torchft"
+
+[project.scripts]
+torchft_lighthouse = "torchft._torchft:lighthouse_main"
+
+[tool.isort]
+multi_line_output = 3
+combine_as_imports = true
+
+[tool.pytest.ini_options]
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_level = "INFO"
+timeout = 60
+timeout_method = "thread"

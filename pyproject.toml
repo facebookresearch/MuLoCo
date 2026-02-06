@@ -1,0 +1,133 @@
+# MULOCO Environment - UV-based installation
+# This pyproject.toml aggregates all dependencies from the component repositories
+
+[project]
+name = "muloco"
+version = "0.1.0"
+description = "MULOCO training environment - aggregated dependencies for torchtitan, torchft, amaia, xlformers, and lm-evaluation-harness"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "MULOCO Team" },
+]
+
+dependencies = [
+    # ============================================
+    # Core PyTorch dependencies
+    # ============================================
+    "torch>=2.7",
+    
+    # ============================================
+    # TorchTitan dependencies
+    # ============================================
+    "torchdata>=0.8.0",
+    "datasets>=2.21.0",
+    "blobfile",
+    "tiktoken",
+    "tomli>=1.1.0",
+    "fsspec[s3]",
+    "tyro==0.9.32",
+    "tensorboard",
+    "mmengine",  # Required for config_manager
+    "einops",  # Required for ccloco
+    
+    # ============================================
+    # LM Evaluation Harness dependencies
+    # ============================================
+    "accelerate>=0.26.0",
+    "evaluate>=0.4.0",
+    "jsonlines",
+    "numexpr",
+    "peft>=0.2.0",
+    "pybind11>=2.6.2",
+    "pytablewriter",
+    "rouge-score>=0.0.4",
+    "sacrebleu>=1.5.0",
+    "scikit-learn>=0.24.1",
+    "sqlitedict",
+    "tqdm-multiprocess",
+    "transformers>=4.1",
+    "zstandard",
+    "dill",
+    "word2number",
+    "more_itertools",
+    
+    # ============================================
+    # AMAIA dependencies
+    # ============================================
+    "fastapi[standard]",
+    "ipython==8.33.0",
+    "ninja",
+    # Use released omegaconf instead of git version (avoids Java/ANTLR build requirement)
+    "omegaconf>=2.3.0",
+    "opentelemetry-api",
+    "opentelemetry-exporter-otlp",
+    "opentelemetry-sdk",
+    "pysimdjson",
+    "pyyaml",
+    "submitit",
+    "typer",
+    "universal_pathlib",
+    "viztracer",
+    "wandb==0.19.2",
+    "zipnn",
+    
+    # ============================================
+    # Common/shared dependencies
+    # ============================================
+    "numpy",
+    "tqdm",
+    "requests",
+    "aiohttp",
+    "sentencepiece>=0.1.98",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "pytest-timeout",
+    "black",
+    # pyre-check removed: conflicts with tyro due to testslide requiring typeguard<3
+    "parameterized",
+    "expecttest",
+    "torchx",
+]
+
+# LM-eval extras
+math = ["sympy>=1.12", "antlr4-python3-runtime==4.11", "math_verify[antlr4_11_0]"]
+ifeval = ["langdetect", "immutabledict", "nltk>=3.9.1"]
+vllm = ["vllm>=0.4.2"]
+multilingual = ["nagisa>=0.2.7", "jieba>=0.42.1", "pycountry"]
+
+# CUDA-specific dependencies (install separately if needed)
+cuda = [
+    # These may need manual installation:
+    # fgcuda (internal package)
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "black",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.uv.sources]
+# Local editable installs for all component packages
+torchtitan = { path = "torchtitan", editable = true }
+torchft = { path = "torchft", editable = true }
+lm-eval = { path = "lm-evaluation-harness", editable = true }
+amaia = { path = "amaia", editable = true }
+xlformers = { path = "xlformers", editable = true }

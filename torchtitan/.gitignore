@@ -1,0 +1,57 @@
+
+#custom
+multinode_log
+
+__pycache__
+.idea
+.DS_Store
+*.egg-info
+build
+outputs
+outputs_debug
+dist/*
+.vscode
+.vs
+
+# data
+data
+out
+wandb
+
+torchtitan/datasets/**/*.model
+
+# tokenizer models
+# assets/**/*.model
+# assets/**/*.json
+# assets/**/*.txt
+torchtitan/experiments/flux/assets/*
+
+# temp files
+*.log
+error.json
+_remote_module_non_scriptable.py
+
+# Editor temporaries (VIM)
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+*~
+.~lock.*
+
+# macOS dir files
+.DS_Store
+
+*.pkl
+
+jobs/generated_job_files
+jobs/generated_job_files/*
+jobs/generated_job_files_ddp
+jobs/generated_job_files_distributed
+
+
+jobs/muloco_paper/generated_job_files/*
