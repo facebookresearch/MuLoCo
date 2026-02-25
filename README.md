@@ -1,4 +1,4 @@
-# MuLoCo Internal Training Code
+# MuLoCo
 
 This directory contains a UV-based installation of our research code for training MuLoCo 
 
