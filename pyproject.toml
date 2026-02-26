@@ -98,7 +98,7 @@ dev = [
 ]
 
 # LM-eval extras
-math = ["sympy>=1.12", "antlr4-python3-runtime==4.11", "math_verify[antlr4_11_0]"]
+math = ["sympy>=1.12"]
 ifeval = ["langdetect", "immutabledict", "nltk>=3.9.1"]
 vllm = ["vllm>=0.4.2"]
 multilingual = ["nagisa>=0.2.7", "jieba>=0.42.1", "pycountry"]

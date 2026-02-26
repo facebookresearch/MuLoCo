@@ -121,13 +121,16 @@ class HuggingFaceDataset(IterableDataset, Stateful):
         ds = dataset_loader(path)
 
         self.dataset_name = dataset_name
-        # Handle the case where the dataset might be an IterableDatasetDict
-        if hasattr(ds, '_distributed'):
-            self._data = split_dataset_by_node(ds, dp_rank, dp_world_size)
+        # Handle both map-style and iterable datasets
+        if isinstance(ds, Dataset):
+            # Map-style dataset - use built-in sharding
+            if dp_world_size > 1:
+                self._data = ds.shard(num_shards=dp_world_size, index=dp_rank)
+            else:
+                self._data = ds
         else:
-            # For datasets that don't support distributed splitting, use the dataset directly
-            raise ValueError(f"Dataset {dataset_name} does not support distributed splitting")
-            # self._data = ds
+            # Iterable/streaming dataset - use HF distributed splitting
+            self._data = split_dataset_by_node(ds, dp_rank, dp_world_size)
         self._tokenizer = tokenizer
         self.seq_len = seq_len
         self.infinite = infinite

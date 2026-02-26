@@ -35,87 +35,8 @@ from torchtitan.tools.profiling import (
     maybe_enable_memory_snapshot,
     maybe_enable_profiling,
 )
-from mmengine.config import Config, DictAction
 
 from torchtitan.components.fragment import fragment_llm
-
-
-def get_alternative_dataloader(
-    job_config: JobConfig, 
-    data_cfg,
-    data_type: str="train", 
-    dp_world_size: int=1, 
-    dp_rank: int=0, 
-    gradient_accumulation_steps: int=1):        
-    import sys
-    import yaml
-    from pathlib import Path
-    from apps.llm.data_builder import DataSourceArgs, TokenizerArgs
-    from apps.llm.args import build_training_iterator
-    import pprint
-    # pprint.pprint(job_config.to_dict())
-    # Build args object to mimic what would be passed to build_training_iterator
-    class Args:
-        pass
-    args = Args()
-    
-    class Data:
-        pass
-    data = Data()
-
-    # Sources: use DataSourceArgs to ensure all required fields are present
-    if data_type == "train":
-        data.sources = [
-            DataSourceArgs(
-                path=src.path,
-                weight=src.weight,
-                pattern=src.pattern,
-                # type, file_type, and other fields will use DataSourceArgs defaults
-            )
-            for src in data_cfg.sources
-        ]
-        args.batch_size = job_config.training.local_batch_size
-        data.num_workers = job_config.training.train_num_workers
-        data.seed = job_config.training.seed
-    elif data_type == "val":
-        data.sources = [
-            DataSourceArgs(
-                path=src.path,
-                weight=src.weight,
-                pattern=src.pattern,
-                # type, file_type, and other fields will use DataSourceArgs defaults
-            )
-            for src in data_cfg.sources
-        ]
-        args.batch_size = job_config.training.eval_local_batch_size
-        data.num_workers = job_config.training.val_num_workers
-        data.seed = 0 # No shuffling for validation
-    else:
-        raise ValueError(f"Invalid data type: {data_type}")
-
-    # Other data args (set to defaults or from config if present)
-    data.shuffle_buffer_size = 1000
-    data.shuffle_buffer_allow_flush = False
-    data.partition_by_bucket = None
-    data.max_precompute = 40
-    args.data = data
-    args.seq_len = job_config.training.seq_len
-
-    #important for dataloader checkpointing
-    # this is used to ensure the dataloader is checkpointed at every step.
-    args.checkpoint_freq = 1 #job_config.checkpoint.interval
-    args.grad_acc_steps = 1 #gradient_accumulation_steps
-
-    # Tokenizer
-    tokenizer_cfg = data_cfg.tokenizer
-    data.tokenizer = TokenizerArgs(
-        name=tokenizer_cfg.get("name"),
-        path=tokenizer_cfg.get("path"),
-    )
-
-    dataset_loader = build_training_iterator(args, dp_world_size, dp_rank)
-
-    return dataset_loader
 
 
 
@@ -230,34 +151,9 @@ def get_checkpoint_name(job_config: JobConfig, dp_degree: int, parallel_dims: Pa
     return f"{method}_{suffix}"
 
 
-class LoaderInputLabelWrapper:
-    def __init__(self, loader):
-        self.loader = loader
-
-    def __iter__(self):
-        for batch in self.loader:
-            tokens = batch.val.cuda(non_blocking=True)
-            input_ids = tokens[:, :-1]
-            labels = tokens[:, 1:]
-            # Optionally handle mask if needed
-            # labels_mask = (
-            #     batch.mask.cuda(non_blocking=True)[:, 1:]
-            #     if batch.mask is not None
-            #     else None
-            # )
-            yield [{'input': input_ids}, labels]
-
-    def __len__(self):
-        return len(self.loader)
-
-    def state_dict(self) -> dict[str, Any]:
-        return self.loader.state_dict()
-
-    def load_state_dict(self, state_dict: dict[str, Any]) -> None:
-        self.loader.load_state_dict(state_dict)
 
 
-        
+
 class Trainer(torch.distributed.checkpoint.stateful.Stateful):
     job_config: JobConfig
     gc_handler: utils.GarbageCollection
@@ -463,26 +359,41 @@ class Trainer(torch.distributed.checkpoint.stateful.Stateful):
 
 
 
-        self.dataloader, self.tokenizer = get_alternative_dataloader(
-            job_config, 
-            data_cfg=job_config.data_train, 
-            data_type="train", 
-            dp_world_size=dp_degree, 
-            dp_rank=dp_rank, 
-            gradient_accumulation_steps=self.gradient_accumulation_steps)
-        self.dataloader = LoaderInputLabelWrapper(self.dataloader)
+        # Build tokenizer
+        self.tokenizer = self.train_spec.build_tokenizer_fn(job_config)
 
+        # Build training dataloader using HuggingFace datasets
+        from torchtitan.datasets.hf_datasets import build_hf_dataloader
+        self.dataloader = build_hf_dataloader(
+            dp_world_size=dp_degree,
+            dp_rank=dp_rank,
+            tokenizer=self.tokenizer,
+            job_config=job_config,
+            infinite=True,
+        )
+
+        # Build validation dataloaders using HuggingFace datasets
         self.val_dataloaders = {}
-        for x in job_config.data_val:
-            name = x['name']
-            temp_dataloader, _ = get_alternative_dataloader(
-                job_config, 
-                data_cfg=x, 
-                data_type="val", 
-                dp_world_size=dp_degree, 
-                dp_rank=dp_rank, 
-                gradient_accumulation_steps=self.ppl_eval_steps)
-            self.val_dataloaders[name] = iter(LoaderInputLabelWrapper(temp_dataloader))
+        if hasattr(job_config.training, 'val_dataset') and job_config.training.val_dataset:
+            val_dataset_name = job_config.training.val_dataset
+        elif job_config.training.dataset + "_test" in ["c4_test", "dclm_test"]:
+            val_dataset_name = job_config.training.dataset + "_test"
+        else:
+            val_dataset_name = None
+
+        if val_dataset_name:
+            # Temporarily swap dataset name for val loader
+            orig_dataset = job_config.training.dataset
+            job_config.training.dataset = val_dataset_name
+            val_dataloader = build_hf_dataloader(
+                dp_world_size=dp_degree,
+                dp_rank=dp_rank,
+                tokenizer=self.tokenizer,
+                job_config=job_config,
+                infinite=True,
+            )
+            job_config.training.dataset = orig_dataset
+            self.val_dataloaders[val_dataset_name] = iter(val_dataloader)
 
 
 
@@ -1106,6 +1017,7 @@ class Trainer(torch.distributed.checkpoint.stateful.Stateful):
                 )
             else:
                 global_avg_loss = global_max_loss = loss.detach().item()
+                global_ar_loss = global_ar_max_loss = global_avg_loss
 
 
 

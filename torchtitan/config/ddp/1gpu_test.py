@@ -115,7 +115,7 @@ profiling = {'enable_memory_snapshot': False,
                'save_traces_folder': 'profile_trace'}
 
 training = {'compile': False,
-              'dataset': 'dclm',
+              'dataset': 'c4_test',
               'dataset_path': None,
               'deterministic': False,
               'enable_cpu_offload': False,
@@ -133,19 +133,4 @@ training = {'compile': False,
 
               'seed': 42,
               'seq_len': 2048,
-              'steps': 10000}
-
-
-
-data_train = {'sources': [{'path': 'data/nemotron_cc_mixed/train', 'weight': 1,
-                        'pattern': '(?s:.*\\.jsonl)\\Z',}],
- 'tokenizer': {'name': 'tiktoken',
-               'path': 'assets/tokenizer/Meta-Llama-3.1-8B/original/tokenizer.model'}}
-
-
-data_val = [{'name': 'nemotroncc',
-  'sources': [{'path': 'data/nemotron_cc_mixed/val',
-                         'pattern': '(?s:.*\\.jsonl)\\Z',
-                         'weight': 1}],
- 'tokenizer': {'name': 'tiktoken',
-               'path': 'assets/tokenizer/Meta-Llama-3.1-8B/original/tokenizer.model'}}]
+              'steps': 20}
