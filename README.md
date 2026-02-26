@@ -1,10 +1,37 @@
-# MuLoCo
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./media/muloco_logo_dark.svg">
+    <img width="55%" src="./media/muloco_logo.svg" alt="MuLoCo">
+  </picture>
+</p>
 
-This directory contains a UV-based installation of our research code for training MuLoCo 
+<h3 align="center">
+Muon is a Practical Inner Optimizer for DiLoCo
+</h3>
 
-- **torchtitan** - PyTorch native platform for training generative AI models
-- **torchft** - Fault-tolerant training utilities
-- **lm-evaluation-harness** - Language model evaluation framework
+<p align="center">
+  | <a href="https://arxiv.org/abs/2505.23725"><b>Paper</b></a>
+  | <a href="https://bentherien.github.io/muloco-1/"><b>Project Page</b></a>
+  | <a href="https://github.com/bentherien/muloco-1"><b>MuLoCo-1 Code</b></a>
+  | <a href="https://github.com/facebookresearch/MuLoCo"><b>Full Research Code</b></a>
+  | <a href="https://x.com/benjamintherien/status/1928439450100715627"><b>Tweet Thread</b></a>
+  |
+</p>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2505.23725"><img src="https://img.shields.io/badge/arXiv-2505.23725-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://github.com/bentherien/MuLoCo/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="License"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python 3.11+"></a>
+  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.7+-ee4c2c.svg" alt="PyTorch 2.7+"></a>
+</p>
+
+---
+
+This repository contains a UV-based installation of our research code for training with MuLoCo. It bundles:
+
+- **[torchtitan](https://github.com/pytorch/torchtitan)** - PyTorch native platform for training generative AI models
+- **[torchft](https://github.com/meta-pytorch/torchft)** - Fault-tolerant training utilities
+- **[lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness)** - Language model evaluation framework
 
 ## Prerequisites
 
@@ -66,8 +93,7 @@ rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
 ### 3. Set required environment variables
 
 ```bash
-export MULOCO_PATH=/home/btherien/full_muloco_install
-export DATA_PATH=/path/to/your/nemotroncc_mixed  # Path to NemotronCC dataset
+export MULOCO_PATH=/path/to/MuLoCo
 ```
 
 ### 4. Create and sync the virtual environment
@@ -80,7 +106,7 @@ uv sync
 This will:
 - Create a `.venv` virtual environment
 - Install all dependencies from `pyproject.toml`
-- Install local packages (torchtitan, torchft, amaia, xlformers, lm-eval) in editable mode
+- Install local packages (torchtitan, torchft, lm-eval) in editable mode
 
 <details>
 <summary>Editable installations</summary>
@@ -92,8 +118,6 @@ The following local packages are installed in editable mode via `[tool.uv.source
 | torchtitan | `torchtitan/` | PyTorch training framework |
 | torchft | `torchft/` | Fault-tolerant training |
 | lm-eval | `lm-evaluation-harness/` | Language model evaluation |
-| amaia | `amaia/` | AMAIA codebase |
-| xlformers | `xlformers/` | XLFormers utilities |
 
 To manually install lm-evaluation-harness in editable mode (standalone):
 ```bash
@@ -117,65 +141,12 @@ uv pip install -e torchft[dev]
 uv pip install -e lm-evaluation-harness
 ```
 
-### 6. Set up dataset symbolic links
-
-The training code expects the NemotronCC dataset to be available via symbolic links. Use the provided helper script:
-
-```bash
-# Make sure both environment variables are set
-# export MULOCO_PATH=
-# export DATA_PATH=
-
-# Run the dataset setup script
-$MULOCO_PATH/setup_dataset.sh
-```
-
-This creates:
-- **Training data**: 19 symlinks in `torchtitan/data/nemotron_cc_mixed/train/` (splits 5%-100%)
-- **Validation data**: 1 symlink in `torchtitan/data/nemotron_cc_mixed/val/` (split 0%-5%)
-
-<details>
-<summary>Manual setup (alternative)</summary>
-
-If you prefer to set up symlinks manually:
-
-```bash
-# Create dataset directories
-mkdir -p $MULOCO_PATH/torchtitan/data/nemotron_cc_mixed/train
-mkdir -p $MULOCO_PATH/torchtitan/data/nemotron_cc_mixed/val
-
-# Create training data symlinks
-for pct in 005.0_010.0 010.0_015.0 015.0_020.0 020.0_025.0 025.0_030.0 \
-           030.0_035.0 035.0_040.0 040.0_045.0 045.0_050.0 050.0_055.0 \
-           055.0_060.0 060.0_065.0 065.0_070.0 070.0_075.0 075.0_080.0 \
-           080.0_085.0 085.0_090.0 090.0_095.0 095.0_100.0; do
-    ln -sf $DATA_PATH/split_${pct}.jsonl $MULOCO_PATH/torchtitan/data/nemotron_cc_mixed/train/
-done
-
-# Create validation data symlink
-ln -sf $DATA_PATH/split_000.0_005.0.jsonl $MULOCO_PATH/torchtitan/data/nemotron_cc_mixed/val/
-```
-
-</details>
-
-### 7. Install CUDA-specific dependencies (if needed)
-
-Some CUDA-specific packages may need manual installation:
-
-```bash
-# xformers (if using internal version)
-uv pip install git+ssh://git@github.com/fairinternal/xformers.git@910de3ab888ae5ab5c9b4c482fd7d4f1e03886c3
-
-# fgcuda (internal package - install from wheel if available)
-# uv pip install /path/to/fgcuda-0.0.1-cp311-cp311-linux_x86_64.whl
-```
-
 ## Usage
 
 ### Activate the environment
 
 ```bash
-export MULOCO_PATH=/home/btherien/full_muloco_install
+export MULOCO_PATH=/path/to/MuLoCo
 source $MULOCO_PATH/setup.sh
 ```
 
@@ -184,34 +155,26 @@ This will:
 - Configure PYTHONPATH for all repositories
 - Set up WandB and HuggingFace credentials
 - Configure Rust/Cargo if available
-- Warn if dataset symlinks are not set up
 
 ### Manual activation (alternative)
 
 If you only need the virtual environment without additional setup:
 
 ```bash
-source /home/btherien/full_muloco_install/.venv/bin/activate
+source $MULOCO_PATH/.venv/bin/activate
 ```
 
 ## Directory Structure
 
 ```
-full_muloco_install/
+MuLoCo/
 ├── pyproject.toml          # UV project configuration with all dependencies
 ├── setup.sh                # Environment setup script
-├── setup_dataset.sh        # Dataset symlink setup script
 ├── install_dependencies.sh # Rust and protoc installer (no sudo)
 ├── README.md               # This file
-├── torchtitan/         # PyTorch training framework
-│   └── data/
-│       └── nemotron_cc_mixed/
-│           ├── train/  # Training data symlinks (19 files)
-│           └── val/    # Validation data symlink (1 file)
-├── torchft/            # Fault-tolerant training
-├── lm-evaluation-harness/  # LM evaluation
-├── amaia/              # AMAIA codebase
-└── xlformers/          # XLFormers utilities
+├── torchtitan/             # PyTorch training framework
+├── torchft/                # Fault-tolerant training
+└── lm-evaluation-harness/  # LM evaluation
 ```
 
 ## Optional Dependencies
@@ -240,14 +203,7 @@ uv sync --extra multilingual
 ### MULOCO_PATH not set
 If you see "ERROR: MULOCO_PATH environment variable is not set", run:
 ```bash
-export MULOCO_PATH=/home/btherien/full_muloco_install
-```
-
-### DATA_PATH not set
-If you need to set up the dataset symlinks, ensure DATA_PATH points to your NemotronCC data:
-```bash
-export DATA_PATH=/path/to/your/nemotroncc_mixed
-$MULOCO_PATH/setup_dataset.sh
+export MULOCO_PATH=/path/to/MuLoCo
 ```
 
 ### Virtual environment not found
@@ -270,9 +226,17 @@ Alternatively, set the `PROTOC` environment variable directly if protoc is insta
 export PROTOC=/path/to/protoc
 ```
 
-### Dataset symlinks broken
-If the training data symlinks are broken, verify that `DATA_PATH` points to the correct location and re-run:
-```bash
-export DATA_PATH=/path/to/your/nemotroncc_mixed
-$MULOCO_PATH/setup_dataset.sh
+## Citation
+
+```bibtex
+@article{therien2025muloco,
+  title={MuLoCo: Muon is a Practical Inner Optimizer for DiLoCo},
+  author={Therien, Benjamin and Huang, Xiaolong and Defazio, Aaron and Rish, Irina and Belilovsky, Eugene},
+  journal={arXiv preprint arXiv:2505.23725},
+  year={2025}
+}
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

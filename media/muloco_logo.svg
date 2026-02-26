@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="520"
+   height="92"
+   viewBox="0 0 520 92"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg">
+  <!-- PyTorch flame icon -->
+  <path
+     d="M 62.5,27.4 55.9,34 c 10.8,10.8 10.8,28.2 0,38.8 C 45.1,83.6 27.7,83.6 17.1,72.8 6.3,62 6.3,44.6 17.1,34 L 34.2,16.9 36.6,14.5 V 1.6 L 10.8,27.4 c -14.4,14.4 -14.4,37.6 0,52 14.4,14.4 37.6,14.4 51.7,0 14.4,-14.5 14.4,-37.6 0,-52 z"
+     fill="#ee4c2c"
+     stroke="none" />
+  <path
+     d="m 54.4,21 c 0,2.651 -2.149,4.8 -4.8,4.8 -2.651,0 -4.8,-2.149 -4.8,-4.8 0,-2.651 2.149,-4.8 4.8,-4.8 2.651,0 4.8,2.149 4.8,4.8 z"
+     fill="#ee4c2c"
+     stroke="none" />
+  <!-- M (red - capitalized) -->
+  <text x="82" y="72" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="bold" fill="#ee4c2c" letter-spacing="-2">M</text>
+  <!-- u (black - lowercase) -->
+  <text x="145" y="72" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="bold" fill="#000000" letter-spacing="-2">u</text>
+  <!-- L (red - capitalized) -->
+  <text x="196" y="72" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="bold" fill="#ee4c2c" letter-spacing="-2">L</text>
+  <!-- o (black - lowercase) -->
+  <text x="246" y="72" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="bold" fill="#000000" letter-spacing="-2">o</text>
+  <!-- C (red - capitalized) -->
+  <text x="298" y="72" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="bold" fill="#ee4c2c" letter-spacing="-2">C</text>
+  <!-- o (black - lowercase) -->
+  <text x="353" y="72" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="bold" fill="#000000" letter-spacing="-2">o</text>
+</svg>
