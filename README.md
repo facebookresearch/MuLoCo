@@ -27,11 +27,17 @@ Muon is a Practical Inner Optimizer for DiLoCo
 
 ---
 
-This repository contains a UV-based installation of our research code for training with MuLoCo. It bundles:
+## Description
+
+This repository contains the research code used to run all experiments presented in the paper [*MuLoCo: Muon is a Practical Inner Optimizer for DiLoCo*](https://arxiv.org/abs/2505.23725). Our code bundles the following popular packages:
 
 - **[torchtitan](https://github.com/pytorch/torchtitan)** - PyTorch native platform for training generative AI models
 - **[torchft](https://github.com/meta-pytorch/torchft)** - Fault-tolerant training utilities
 - **[lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness)** - Language model evaluation framework
+
+Muon and AdamW implementations are in TorchTitan, while the outer optimizer and communication code is spread between the outer optimizer classes themselves and TorchFT. The code allows for WandB logging and evaluation during training via LM Eval Harness.
+
+**NOTE:** We use a proprietary dataset internally at Meta which is not publicly available. As such, we have reverted the code to the default TorchTitan dataloader, but note that this is not what we used in our experiments.
 
 ## Prerequisites
 

@@ -5,16 +5,7 @@
    viewBox="0 0 1600 280"
    version="1.1"
    xmlns="http://www.w3.org/2000/svg">
-  <!-- M (blue - capitalized) -->
-  <text x="20" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" fill="#0064E0" letter-spacing="-8">M</text>
-  <!-- u (white - lowercase) -->
-  <text x="222" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" fill="#ffffff" letter-spacing="-8">u</text>
-  <!-- L (blue - capitalized) -->
-  <text x="388" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" fill="#0064E0" letter-spacing="-8">L</text>
-  <!-- o (white - lowercase) -->
-  <text x="540" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" fill="#ffffff" letter-spacing="-8">o</text>
-  <!-- C (blue - capitalized) -->
-  <text x="700" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" fill="#0064E0" letter-spacing="-8">C</text>
-  <!-- o (white - lowercase) -->
-  <text x="880" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" fill="#ffffff" letter-spacing="-8">o</text>
+  <text x="800" y="220" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="260" font-weight="300" letter-spacing="-8">
+    <tspan fill="#0064E0">M</tspan><tspan fill="#ffffff">u</tspan><tspan fill="#0064E0">L</tspan><tspan fill="#ffffff">o</tspan><tspan fill="#0064E0">C</tspan><tspan fill="#ffffff">o</tspan>
+  </text>
 </svg>
