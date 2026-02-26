@@ -12,7 +12,7 @@ Muon is a Practical Inner Optimizer for DiLoCo
 <p align="center">
   | <a href="https://arxiv.org/abs/2505.23725"><b>Paper</b></a>
   | <a href="https://bentherien.github.io/muloco-1/"><b>Project Page</b></a>
-  | <a href="https://github.com/bentherien/muloco-1"><b>MuLoCo-1 Code</b></a>
+  | <a href="https://github.com/bentherien/muloco-1"><b>MuLoCo-1 Optimizer Code</b></a>
   | <a href="https://github.com/facebookresearch/MuLoCo"><b>Full Research Code</b></a>
   | <a href="https://x.com/twitter/status/2026862326184304734"><b>Tweet Thread</b></a>
   |
