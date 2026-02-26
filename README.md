@@ -236,10 +236,12 @@ export PROTOC=/path/to/protoc
 
 ```bibtex
 @article{therien2025muloco,
-  title={MuLoCo: Muon is a Practical Inner Optimizer for DiLoCo},
-  author={Therien, Benjamin and Huang, Xiaolong and Defazio, Aaron and Rish, Irina and Belilovsky, Eugene},
-  journal={arXiv preprint arXiv:2505.23725},
-  year={2025}
+    title={MuLoCo: Muon is a Practical Inner Optimizer for DiLoCo},
+    author={Therien, Benjamin and Huang, Xiaolong and Defazio, Aaron
+            and Rish, Irina and Belilovsky, Eugene},
+    journal={arXiv preprint arXiv:2505.23725},
+    year={2025},
+    url={https://arxiv.org/abs/2505.23725}
 }
 ```
 
