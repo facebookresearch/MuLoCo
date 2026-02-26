@@ -169,9 +169,8 @@ llama3_configs = {
 
 }
 
-count = 0
-# try:
-from apps.llm.args import build_training_iterator
+from torchtitan.datasets.hf_datasets import build_hf_dataloader
+from torchtitan.datasets.tokenizer.tiktoken import build_tiktoken_tokenizer
 register_train_spec(
     TrainSpec(
         name="llama3",
@@ -181,40 +180,8 @@ register_train_spec(
         pipelining_fn=pipeline_llama,
         build_optimizers_fn=build_optimizers,
         build_lr_schedulers_fn=build_lr_schedulers,
-        build_dataloader_fn=build_training_iterator,
-        # build_dataloader_fn=build_hf_dataloader,
-        build_tokenizer_fn=lambda x: None,
+        build_dataloader_fn=build_hf_dataloader,
+        build_tokenizer_fn=build_tiktoken_tokenizer,
         build_loss_fn=build_cross_entropy_loss,
     )
 )
-
-# except Exception as e:
-#     count += 1 
-#     pass
-
-
-
-# try:
-
-#     from torchtitan.datasets.hf_datasets import build_hf_dataloader
-#     from torchtitan.datasets.tokenizer.tiktoken import build_tiktoken_tokenizer
-#     register_train_spec(
-#         TrainSpec(
-#             name="llama3",
-#             cls=Transformer,
-#             config=llama3_configs,
-#             parallelize_fn=parallelize_llama,
-#             pipelining_fn=pipeline_llama,
-#             build_optimizers_fn=build_optimizers,
-#             build_lr_schedulers_fn=build_lr_schedulers,
-#             build_dataloader_fn=build_hf_dataloader,
-#             build_tokenizer_fn=build_tiktoken_tokenizer,
-#             build_loss_fn=build_cross_entropy_loss,
-#         )
-#     )
-# except Exception as e:
-#     # print(e)
-#     count += 1 
-#     pass
-
-# assert count < 2, "build_hf_dataloader and build_tiktoken_tokenizer are not available"
