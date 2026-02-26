@@ -170,12 +170,18 @@ outer_optimizer = {
 - **DiLoCo**: Uses AdamW as the inner optimizer
 - **MuLoCo**: Uses Muon as the inner optimizer (set `optimizer.name = 'Muon'`)
 
-## Environment Setup
+## Running Jobs on a SLURM Cluster
 
-Ensure you have set up the environment using the parent `setup.sh`:
+For a detailed guide on configuring `generate_job_file.py` for your cluster (QOS settings, NCCL tuning, log paths, etc.) and understanding the full job generation pipeline, see [RUNNING_JOBS.md](./RUNNING_JOBS.md).
+
+## Installation and Environment Setup
+
+For installation instructions (UV, Rust, protoc, virtual environment setup), see the [main README](../README.md).
+
+Once installed, activate the environment:
 
 ```bash
-export MULOCO_PATH=/path/to/full_muloco_install
+export MULOCO_PATH=/path/to/MuLoCo
 source $MULOCO_PATH/setup.sh
 cd $MULOCO_PATH/torchtitan
 ```

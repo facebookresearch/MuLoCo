@@ -39,6 +39,10 @@ Muon and AdamW implementations are in TorchTitan, while the outer optimizer and 
 
 **NOTE:** We use a proprietary dataset internally at Meta which is not publicly available. As such, we have reverted the code to the default TorchTitan dataloader, but note that this is not what we used in our experiments.
 
+## Running Jobs
+
+For instructions on launching training experiments on a SLURM cluster, see the [torchtitan README](./torchtitan/README.md). It covers configuration files, quick-start commands for DDP and DiLoCo/MuLoCo training, and how to reproduce the paper experiments.
+
 ## Prerequisites
 
 - Python 3.11+
